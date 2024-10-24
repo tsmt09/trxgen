@@ -1,3 +1,5 @@
+use std::io::Write;
+
 use chrono::Days;
 use fake::{Dummy, Fake};
 use rand::{seq::IteratorRandom, Rng};
@@ -5,8 +7,8 @@ use rand_distr::{num_traits::ToPrimitive, Distribution, SkewNormal};
 use serde::{Deserialize, Serialize};
 
 static ACCOUNT_COUNT: usize = 10_000_000;
-static DAYS: usize = 365;
-static TRX_PER_DAY: usize = 150_000;
+static DAYS: usize = 7;
+static TRX_PER_DAY: usize = 1_000_000;
 
 #[derive(Serialize, Deserialize)]
 struct Record {
@@ -18,6 +20,15 @@ struct Record {
 
 fn main() {
     // create 100k fake accounts
+    let mut writer: Box<dyn Write> = Box::new(std::io::stdout());
+    writer = Box::new(
+        std::fs::File::options()
+            .append(true)
+            .write(true)
+            .create(true)
+            .open("trx.json")
+            .unwrap(),
+    );
     let mut accounts: Vec<String> = Vec::with_capacity(ACCOUNT_COUNT);
     for _ in 0..ACCOUNT_COUNT {
         accounts.push(fake::faker::creditcard::en::CreditCardNumber().fake());
@@ -48,7 +59,7 @@ fn main() {
         records_today.sort_by(|a, b| b.timestamp.partial_cmp(&a.timestamp).unwrap());
         for _ in 0..TRX_PER_DAY {
             let record = records_today.pop();
-            println!("{}", serde_json::to_string(&record).unwrap());
+            writeln!(writer, "{}", serde_json::to_string(&record).unwrap());
         }
         day = next_day;
     }
