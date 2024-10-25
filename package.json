@@ -8,6 +8,7 @@
   },
   "author": "",
   "license": "ISC",
+  "type": "module",
   "dependencies": {
     "@faker-js/faker": "^9.0.3",
     "random": "^5.1.1"
