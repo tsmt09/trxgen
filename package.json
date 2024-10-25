@@ -1,0 +1,15 @@
+{
+  "name": "trxgen",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dr": "deno run --allow-read=. index.cjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@faker-js/faker": "^9.0.3",
+    "random": "^5.1.1"
+  }
+}
